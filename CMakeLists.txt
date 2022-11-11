@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED_VERSION(VERSION 3.16)
+cmake_minimum_required(VERSION 3.16)
 
 project(CMakeTemplate VERSION 1.0.0 LANGUAGES C CXX)
 
@@ -17,5 +17,6 @@ if(COMPILE_LIBRARY)
     add_subdirectory(Test)
 endif()
 
+add_subdirectory(configured)
 add_subdirectory(Src)
 add_subdirectory(App)
