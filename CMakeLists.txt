@@ -21,6 +21,12 @@ if(COMPILE_LIBRARY)
     add_subdirectory(Test)
 endif()
 
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
+include(AddGitSubmodule)
+
+add_git_submodule(external/json)
+
 add_subdirectory(configured)
+add_subdirectory(external)
 add_subdirectory(Src)
 add_subdirectory(App)
