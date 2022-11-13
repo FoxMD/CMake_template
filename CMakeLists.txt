@@ -22,9 +22,24 @@ if(COMPILE_LIBRARY)
 endif()
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
-include(AddGitSubmodule)
 
+include(AddGitSubmodule)
 add_git_submodule(external/json)
+
+include(FetchContent)
+FetchContent_Declare(
+    fmt
+    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+    GIT_TAG 9.1.0 
+)
+FetchContent_makeAvailable(fmt)
+
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.11.0 
+)
+FetchContent_makeAvailable(spdlog)
 
 add_subdirectory(configured)
 add_subdirectory(external)
