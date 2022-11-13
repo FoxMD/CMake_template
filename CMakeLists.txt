@@ -18,7 +18,7 @@ set(LIBRARY_NAME Library)
 set(TEST_LIBRARY_NAME Test)
 
 if(COMPILE_LIBRARY)
-    add_subdirectory(Test)
+    add_subdirectory(tests)
 endif()
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
@@ -28,5 +28,5 @@ add_git_submodule(external/json)
 
 add_subdirectory(configured)
 add_subdirectory(external)
-add_subdirectory(Src)
-add_subdirectory(App)
+add_subdirectory(src)
+add_subdirectory(app)
