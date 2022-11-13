@@ -5,3 +5,6 @@ prepare:
 	rm -rf build
 	mkdir build
 	cd build && conan install .. && cd ..
+
+make_conan:
+	cd build && conan install ..
