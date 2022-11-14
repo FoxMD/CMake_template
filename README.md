@@ -2,6 +2,22 @@
 ## How to build
 Use cmake -S . -Bbuild -G "MinGW Makefiles"
 
+### For Catch2 set up conan package
+
+Configuration:
+[settings]
+arch=x86_64
+arch_build=x86_64
+build_type=Release
+compiler=gcc
+compiler.libcxx=libstdc++11
+compiler.version=9
+os=Linux
+os_build=Windows
+[options]
+[build_requires]
+[env]
+
 ### Generators
   Visual Studio 17 2022        = Generates Visual Studio 2022 project files.
                                  Use -A option to specify architecture.</br>
