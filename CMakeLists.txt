@@ -48,6 +48,6 @@ FetchContent_Declare(
         add_subdirectory(external)
         add_subdirectory(src)
         add_subdirectory(app)
-        #if(COMPILE_TEST)
+        if(COMPILE_TEST)
             add_subdirectory(tests)
-        #endif()
+        endif()
