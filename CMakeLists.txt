@@ -10,14 +10,14 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)    
 set(CMAKE_CXX_EXTENSIONS OFF)         
 
-option(COMPILE_TEST "Compile with TEST LIBRARY" OFF)
+option(COMPILE_TEST "Compile with TEST LIBRARY" ON)
 option(__DEBUG "Compile with -D __DEBUG" ON)
 
 set(EXECUTABLE_NAME Executable)
 set(LIBRARY_NAME Library)
 set(TEST_LIBRARY_NAME Test)
 
-if(COMPILE_LIBRARY)
+if(COMPILE_TEST)
     add_subdirectory(tests)
 endif()
 
@@ -41,6 +41,7 @@ FetchContent_Declare(
 )
 FetchContent_makeAvailable(spdlog)
 
+set(CONAN_DISABLE_CHECK_COMPILER TRUE)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
