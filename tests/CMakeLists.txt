@@ -1,5 +1,5 @@
 include(CTest)
-set(TEST_MAIN "Unit tests")
+set(TEST_MAIN "unit_tests")
 set(TEST_SOURCES 
     main.cpp
 )
