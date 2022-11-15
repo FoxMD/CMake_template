@@ -8,3 +8,10 @@ prepare:
 
 make_conan:
 	cd build && conan install ..
+
+install:
+	sudo apt-get install gcovr lcov
+
+install_docs:
+	pip install jinja2 Pygments
+	sudo apt-get install doxygen
