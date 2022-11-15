@@ -1,6 +1,6 @@
 [requires]
-catch2/2.13.8
-cxxopts/3.0.0
+catch2/2.13.4
+cxxopts/2.2.1
 
 [generators]
 cmake

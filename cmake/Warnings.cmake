@@ -1,68 +1,83 @@
-if(ENABLE_CLANG_TIDY)
-    if(CMake_SOURCE_DIR STREQUAL CMake_BINARY_DIR)
-        message(FATAL_ERROR "CMake_RUN_CLANG_TIDY requires an out-of-source build!")
+function(target_set_warnings)
+
+    if(NOT ENABLE_WARNINGS)
+        return()
     endif()
-    find_program(CLANG_TIDY_COMMAND NAMES clang-tidy)
-    if(NOT CLANG_TIDY_COMMAND)
-        message(WARNING "CMake_RUN_CLANG_TIDY is ON but clang-tidy is not found!")
-        set(CMAKE_CXX_CLANG_TIDY "" CACHE STRING "" FORCE)
-    else()
-        set(CLANGTIDY_EXTRA_ARGS
-            "-extra-arg=-Wno-unknown-warning-option")
-        set(CLANGTIDY_EXTRA_ARGS_BEFORE
-            "--extra-arg-before=-std=${CMAKE_CXX_STANDARD}")
-        set(CMAKE_CXX_CLANG_TIDY
-            "${CLANG_TIDY_COMMAND}"
-            ${CLANGTIDY_EXTRA_ARGS_BEFORE}
-            ${CLANGTIDY_EXTRA_ARGS})
+
+    set(oneValueArgs TARGET ENABLE AS_ERROR)
+    cmake_parse_arguments(target_set_warnings "" "${oneValueArgs}" "" ${ARGN} )
+
+    if(NOT ${target_set_warnings_ENABLE})
+        return()
     endif()
-endif()
 
-if(ENABLE_CPPCHECK)
-    find_program(CPPCHECK_BIN NAMES cppcheck)
+    set(MSVC_WARNINGS
+        /W4 # Baseline reasonable warnings
+        /w14242 # 'identifier': conversion from 'type1' to 'type1', possible loss of data
+        /w14254 # 'operator': conversion from 'type1:field_bits' to 'type2:field_bits', possible loss of data
+        /w14263 # 'function': member function does not override any base class virtual member function
+        /w14265 # 'classname': class has virtual functions, but destructor is not virtual instances of this class may not
+                # be destructed correctly
+        /w14287 # 'operator': unsigned/negative constant mismatch
+        /we4289 # nonstandard extension used: 'variable': loop control variable declared in the for-loop is used outside
+                # the for-loop scope
+        /w14296 # 'operator': expression is always 'boolean_value'
+        /w14311 # 'variable': pointer truncation from 'type1' to 'type2'
+        /w14545 # expression before comma evaluates to a function which is missing an argument list
+        /w14546 # function call before comma missing argument list
+        /w14547 # 'operator': operator before comma has no effect; expected operator with side-effect
+        /w14549 # 'operator': operator before comma has no effect; did you intend 'operator'?
+        /w14555 # expression has no effect; expected expression with side- effect
+        /w14619 # pragma warning: there is no warning number 'number'
+        /w14640 # Enable warning on thread un-safe static member initialization
+        /w14826 # Conversion from 'type1' to 'type_2' is sign-extended. This may cause unexpected runtime behavior.
+        /w14905 # wide string literal cast to 'LPSTR'
+        /w14906 # string literal cast to 'LPWSTR'
+        /w14928 # illegal copy-initialization; more than one user-defined conversion has been implicitly applied
+        /permissive- # standards conformance mode for MSVC compiler.
+    )
 
-    if(CPPCHECK_BIN)
-        execute_process(COMMAND ${CPPCHECK_BIN} --version
-            OUTPUT_VARIABLE CPPCHECK_VERSION
-            ERROR_QUIET
-            OUTPUT_STRIP_TRAILING_WHITESPACE)
+    set(CLANG_WARNINGS
+        -Wall
+        -Wextra # reasonable and standard
+        -Wshadow # warn the user if a variable declaration shadows one from a parent context
+        -Wnon-virtual-dtor # warn the user if a class with virtual functions has a non-virtual destructor. This helps
+                            # catch hard to track down memory errors
+        -Wold-style-cast # warn for c-style casts
+        -Wcast-align # warn for potential performance problem casts
+        -Wunused # warn on anything being unused
+        -Woverloaded-virtual # warn if you overload (not override) a virtual function
+        -Wpedantic # warn if non-standard C++ is used
+        -Wconversion # warn on type conversions that may lose data
+        -Wsign-conversion # warn on sign conversions
+        -Wnull-dereference # warn if a null dereference is detected
+        -Wdouble-promotion # warn if float is implicit promoted to double
+        -Wformat=2 # warn on security issues around functions that format output (ie printf)
+    )
 
-        set(CPPCHECK_PROJECT_ARG "--project=${PROJECT_BINARY_DIR}/compile_commands.json")
-        set(CPPCHECK_BUILD_DIR_ARG "--cppcheck-build-dir=${PROJECT_BINARY_DIR}/analysis/cppcheck" CACHE STRING "The build directory to use")
+    set(GCC_WARNINGS
+        ${CLANG_WARNINGS}
+        -Wmisleading-indentation # warn if indentation implies blocks where blocks do not exist
+        -Wduplicated-cond # warn if if / else chain has duplicated conditions
+        -Wduplicated-branches # warn if if / else branches have duplicated code
+        -Wlogical-op # warn about logical operations being used where bitwise were probably wanted
+        -Wuseless-cast # warn if you perform a cast to the same type
+    )
 
-        set(CPPCHECK_ERROR_EXITCODE_ARG "--error-exitcode=0" CACHE STRING "The exitcode to use if an error is found")
-        set(CPPCHECK_CHECKS_ARGS "--enable=all" CACHE STRING "Arguments for the checks to run")
-        set(CPPCHECK_OTHER_ARGS "--suppress=missingIncludeSystem" CACHE STRING "Other arguments")
-        set(_CPPCHECK_EXCLUDES)
-        set(CPPCHECK_EXCLUDES
-            ${CMAKE_SOURCE_DIR}/external
-            ${CMAKE_BINARY_DIR}/
-        )
-
-        ## set exclude files and folders
-        foreach(ex ${CPPCHECK_EXCLUDES})
-            list(APPEND _CPPCHECK_EXCLUDES "-i${ex}")
-        endforeach(ex)
-
-        set(CPPCHECK_ALL_ARGS
-            ${CPPCHECK_PROJECT_ARG}
-            ${CPPCHECK_BUILD_DIR_ARG}
-            ${CPPCHECK_ERROR_EXITCODE_ARG}
-            ${CPPCHECK_CHECKS_ARGS}
-            ${CPPCHECK_OTHER_ARGS}
-            ${_CPPCHECK_EXCLUDES}
-        )
-
-        set(CPPCHECK_COMMAND
-            ${CPPCHECK_BIN}
-            ${CPPCHECK_ALL_ARGS}
-        )
-
-        file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/analysis/cppcheck)
-        add_custom_target(cppcheck_analysis
-            COMMAND ${CPPCHECK_COMMAND})
-        message("Cppcheck finished setting up.")
-    else()
-        message("Cppcheck executable not found..")
+    if(${target_set_warnings_AS_ERROR})
+        set(CLANG_WARNINGS ${CLANG_WARNINGS} -Werror)
+        set(GCC_WARNINGS ${GCC_WARNINGS} -Werror)
+        set(MSVC_WARNINGS ${MSVC_WARNINGS} /WX)
     endif()
-endif()
+
+    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        set(PROJECT_WARNINGS ${MSVC_WARNINGS})
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        set(PROJECT_WARNINGS ${CLANG_WARNINGS})
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        set(PROJECT_WARNINGS ${GCC_WARNINGS})
+    endif()
+
+    target_compile_options(${target_set_warnings_TARGET} PRIVATE ${PROJECT_WARNINGS})
+
+endfunction(target_set_warnings)
