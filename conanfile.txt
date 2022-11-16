@@ -1,5 +1,5 @@
 [requires]
-catch2/2.13.4
+catch2/2.13.8
 cxxopts/2.2.1
 
 [generators]

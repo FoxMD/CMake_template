@@ -44,7 +44,6 @@ if (ENABLE_COVERAGE)
     include(CodeCoverage)
     append_coverage_compiler_flags()
 endif()
-add_git_submodule(external/json)
 
 FetchContent_Declare(
     fmt

@@ -6,5 +6,5 @@ function(add_git_submodule dir)
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
     endif()
 
-    #add_subdirectory(${dir})
+    add_subdirectory(${dir})
 endfunction(add_git_submodule)

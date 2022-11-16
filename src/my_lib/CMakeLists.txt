@@ -13,7 +13,7 @@ add_library(${LIBRARY_NAME} STATIC
     ${LIBRARY_HEADERS})
 target_include_directories(${LIBRARY_NAME} PUBLIC
     ${LIBRARY_INCLUDES})
-target_link_libraries(${LIBRARY_NAME} PRIVATE
+target_link_libraries(${LIBRARY_NAME} PUBLIC
     nlohmann_json)
 
 if (${ENABLE_WARNINGS})

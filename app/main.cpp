@@ -1,10 +1,10 @@
 #include <iostream>
 
-#include <nlohmann/json.hpp>
 #include "config.hpp"
 #include <spdlog/spdlog.h>
 #include <fmt/format.h>
 #include <cxxopts.hpp>
+#include <nlohmann/json.hpp>
 
 int main(int argc, char **argv)
 {
