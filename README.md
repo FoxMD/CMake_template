@@ -2,7 +2,7 @@
 ![C++](https://camo.githubusercontent.com/c59efb57803dde7f352f4932a468a7f39fa2fb5f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f632532422532422d31312f31342f31372f32302d626c75652e737667)
 ![Build CI Test](https://github.com/FoxMD/CMake_template/workflows/Ubuntu%20CI%20Test/badge.svg)
 ![Build CI Test](https://github.com/FoxMD/CMake_template/workflows/Windows%20CI%20Test/badge.svg)
-[![codecov](https://codecov.io/gh/franneck94/CppProjectTemplate/branch/master/graph/badge.svg)](https://codecov.io/gh/franneck94/CppProjectTemplate)
+[![codecov](https://codecov.io/gh/FoxMD/CMake_template/branch/master/graph/badge.svg)]([https://codecov.io/gh/FoxMD/CMake_template])
 ## How to build
 Use cmake -S . -Bbuild -G "MinGW Makefiles"
 
